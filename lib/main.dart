@@ -12,9 +12,13 @@ class FriendlychatApp extends StatelessWidget {
 class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
   final List<ChatMessage> _messages = <ChatMessage>[];
   final TextEditingController _textController = TextEditingController();
+  bool _isComposing = false;
 
   void _handleSubmitted(String text) {
     _textController.clear();
+    setState(() {
+      _isComposing = false;
+    });
     ChatMessage message = ChatMessage(
         text: text,
         animationController: AnimationController(
@@ -27,7 +31,10 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
 
   Widget _buildTextComposer() {
     return IconTheme(
-        data: IconThemeData(color: Theme.of(context).accentColor),
+        data: IconThemeData(
+            color: _isComposing
+                ? Theme.of(context).accentColor
+                : Theme.of(context).disabledColor),
         child: Container(
             margin: const EdgeInsets.symmetric(horizontal: 8.0),
             child: Row(
@@ -35,6 +42,11 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
                 Flexible(
                   child: TextField(
                     controller: _textController,
+                    onChanged: (String text) {
+                      setState(() {
+                        _isComposing = text.length > 0;
+                      });
+                    },
                     onSubmitted: _handleSubmitted,
                     decoration:
                         InputDecoration.collapsed(hintText: "Send a message"),
@@ -44,7 +56,9 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
                     margin: EdgeInsets.symmetric(horizontal: 4.0),
                     child: IconButton(
                       icon: Icon(Icons.send),
-                      onPressed: () => _handleSubmitted(_textController.text),
+                      onPressed: () => _isComposing
+                          ? _handleSubmitted(_textController.text)
+                          : null,
                     ))
               ],
             )));
@@ -114,14 +128,16 @@ class ChatMessage extends StatelessWidget {
                 Container(
                     margin: const EdgeInsets.only(right: 16.0),
                     child: CircleAvatar(child: Text(_name[0]))),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text(_name, style: Theme.of(context).textTheme.subhead),
-                    Container(
-                        margin: const EdgeInsets.only(top: 5.0),
-                        child: Text(text))
-                  ],
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(_name, style: Theme.of(context).textTheme.subhead),
+                      Container(
+                          margin: const EdgeInsets.only(top: 5.0),
+                          child: Text(text))
+                    ],
+                  ),
                 )
               ],
             )));
