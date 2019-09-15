@@ -6,8 +6,8 @@ A simple chat app made with flutter. The app is made by following the tutorial o
 
 ## iOS
 
-![iOS demo](./ios-demo.png)
+<img src="https://github.com/alexKwonIsAwesome/flutter_friendlychat/blob/master/ios-demo.png" width="500" />
 
 ## Android
 
-![Android demo](./android-demo.png)
+<img src="https://github.com/alexKwonIsAwesome/flutter_friendlychat/blob/master/android-demo.png" width="500" />
